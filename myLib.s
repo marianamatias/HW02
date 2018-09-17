@@ -138,33 +138,25 @@ collision:
 	@ frame_needed = 0, uses_anonymous_args = 0
 	str	lr, [sp, #-4]!
 	ldr	lr, [sp, #4]
-	ldr	ip, [sp, #12]
-	add	ip, lr, ip
-	sub	ip, ip, #1
-	cmp	ip, r0
-	ble	.L31
-	add	r0, r0, r2
-	sub	r0, r0, #1
-	cmp	r0, lr
-	bgt	.L33
-.L31:
-	mov	r0, #0
+	ldr	ip, [sp, #8]
+	add	r3, r0, r2
+	cmp	r3, lr
+	cmpge	r1, ip
+	movlt	r3, #0
+	movge	r3, #1
+	movlt	r0, r3
+	bge	.L31
 	ldr	lr, [sp], #4
 	bx	lr
-.L33:
-	ldr	r2, [sp, #8]
-	ldr	r0, [sp, #16]
-	add	r2, r2, r0
-	sub	r2, r2, #1
-	cmp	r2, r1
-	ble	.L31
-	add	r0, r1, r3
-	ldr	r3, [sp, #8]
-	sub	r0, r0, #1
-	cmp	r0, r3
-	movle	r0, #0
-	movgt	r0, #1
+.L31:
+	ldr	r3, [sp, #12]
+	add	r1, r2, r1
+	add	ip, ip, r3
+	cmp	r1, ip
+	cmple	r0, lr
 	ldr	lr, [sp], #4
+	movle	r0, #1
+	movgt	r0, #0
 	bx	lr
 	.size	collision, .-collision
 	.global	videoBuffer

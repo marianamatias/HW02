@@ -32,13 +32,9 @@ void waitForVBlank() {
 
 int collision(int rowA, int colA, int heightA, int widthA, int rowB, int colB, int heightB, int widthB) {
 
-    // if (((rowA + heightA) >= rowB) && (colA >= colB)){
-    //     if ((colA + widthA) <= (colB + widthB)){
-    //         return 1;
-    //     }
-    // }
+    if (((rowA + heightA) >= rowB) && (colA >= colB) && ((colA + heightA) <= (colB + heightB)) && (rowA <= (rowB))){
+      return 1;
+    }
 
-    // return 0;
-    return rowA < rowB + heightB - 1 && rowA + heightA - 1 > rowB &&
-           colA < colB + widthB - 1 && colA + widthA - 1 > colB;
+    return 0;
 }

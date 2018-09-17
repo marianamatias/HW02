@@ -2,7 +2,6 @@
 #define HEADER_FILE
 #include <time.h>
 #include <stdlib.h>
-
 #include <stdio.h>
 
 // numbers in range [lower, upper].
@@ -41,6 +40,5 @@ void initBall(BALL *a) {
     a->active = 0;
     a->erased = 0;
 }
-
 
 #endif

@@ -1061,7 +1061,6 @@ extern long double strtold (const char *restrict, char **restrict);
 # 333 "/Users/marianamatias/CS2261/devkitARM/arm-none-eabi/include/stdlib.h" 3
 
 # 5 "struct.h" 2
-
 # 1 "/Users/marianamatias/CS2261/devkitARM/arm-none-eabi/include/stdio.h" 1 3
 # 36 "/Users/marianamatias/CS2261/devkitARM/arm-none-eabi/include/stdio.h" 3
 # 1 "/Users/marianamatias/CS2261/devkitARM/lib/gcc/arm-none-eabi/7.1.0/include/stddef.h" 1 3 4
@@ -1320,11 +1319,11 @@ static __inline__ int __sputc_r(struct _reent *_ptr, int _c, FILE *_p) {
 }
 # 767 "/Users/marianamatias/CS2261/devkitARM/arm-none-eabi/include/stdio.h" 3
 
-# 7 "struct.h" 2
+# 6 "struct.h" 2
 
 
 
-# 9 "struct.h"
+# 8 "struct.h"
 int random(int lower, int upper) {
     int num = (rand() %
        (upper - lower + 1)) + lower;
@@ -1389,21 +1388,29 @@ BALL balls[5];
 unsigned short ballColor;
 
 
+int count = 0;
+
+
 int main() {
 
  initialize();
 
  while(1) {
-
-
   oldButtons = buttons;
   buttons = (*(volatile unsigned short *)0x04000130);
 
   update();
   waitForVBlank();
   draw();
+
+  if (count >= 1) {
+   break;
+  }
  }
+
+ winState();
 }
+
 
 
 void initialize() {
@@ -1443,7 +1450,9 @@ void update() {
              break;
          }
      }
-# 97 "main.c"
+
+
+
  if ((~(*(volatile unsigned short *)0x04000130) & ((1<<5)))) {
   bCol -= 1;
  }
@@ -1462,9 +1471,9 @@ void update() {
 }
 
 void updateBall(BALL *a) {
-
-
-
+    if (a->row > 0 && a->row + a->size < 160) {
+        a->row += a->rdel;
+    }
 
     a->row += 1;
 
@@ -1474,7 +1483,7 @@ void updateBall(BALL *a) {
 
     if (collision(a->row, a->col, a->size, a->size, bRow, bCol, bHeight, bWidth)) {
         a->active = 0;
-
+        count += 1;
     }
 }
 
@@ -1494,29 +1503,33 @@ void draw() {
 
 
  for (int i = 0; i < 5; i++) {
-  if (!balls[i].active && !balls[i].erased) {
-   eraseBall(&balls[i]);
-   balls[i].erased = 1;
-  }
-        if (balls[i].active) {
-            drawBall(&balls[i]);
-        }
+  drawBall(&balls[i]);
     }
 }
 
 void eraseBall (BALL *a) {
     drawRect(a->row, a->col, a->size, a->size, bgColor);
-
 }
 
 void drawBall(BALL *a) {
 
-
     drawRect(a->oldRow, a->oldCol, a->size, a->size, bgColor);
+
+
+ if (!a->active && !a->erased) {
+  eraseBall(a);
+  a->erased = 1;
+ }
 
 
     drawRect(a->row, a->col, a->size, a->size, a->color);
 
     a->oldRow = a->row;
     a->oldCol = a->col;
+}
+
+void winState() {
+    fillScreen(((31) | (31)<<5 | (31)<<10));
+    drawRect(25, 100, 30, 75, ((31) | (31)<<5 | (0)<<10));
+    drawRect(120, 100, 30, 20, ((31) | (31)<<5 | (0)<<10));
 }
